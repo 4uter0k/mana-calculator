@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор Маны</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .branch-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .branch-btn {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .branch-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .branch-btn.active {
+            background-color: #e74c3c;
+        }
+        
+        .research-section {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .research-section.active {
+            display: block;
+        }
+        
+        .research-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .research-item:last-child {
+            border-bottom: none;
+        }
+        
+        .research-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .progress-input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .remaining {
+            width: 100px;
+            text-align: right;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .total-remaining {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Калькулятор Маны</h1>
+            <p>Этот калькулятор поможет вам рассчитать точное количество маны, необходимых для перехода на следующий уровень. Выберите нужный уровень, укажите ваш текущий прогресс для каждого здания и мгновенно получите расчет остатка маны. </p>
+        </header>
+        
+        <div class="branch-selector">
+            <button class="branch-btn active" data-branch="mana1">Мана +1</button>
+            <button class="branch-btn" data-branch="mana2">Мана +2</button>
+            <button class="branch-btn" data-branch="mana3">Мана +3</button>
+            <button class="branch-btn" data-branch="mana4">Мана +4</button>
+            <button class="branch-btn" data-branch="mana5">Мана +5</button>
+            <button class="branch-btn" data-branch="mana6">Мана +6</button>
+            <button class="branch-btn" data-branch="manasteal">Мана-сталь +6</button>
+        </div>
+        
+        <div id="mana1" class="research-section active">
+            <h2 class="section-title">Мана +1</h2>
+        </div>
+        
+        <div id="mana2" class="research-section">
+            <h2 class="section-title">Мана +2</h2>
+        </div>
+        
+        <div id="mana3" class="research-section">
+            <h2 class="section-title">Мана +3</h2>
+        </div>
+        
+        <div id="mana4" class="research-section">
+            <h2 class="section-title">Мана +4</h2>
+        </div>
+        
+        <div id="mana5" class="research-section">
+            <h2 class="section-title">Мана +5</h2>
+        </div>
+        
+        <div id="mana6" class="research-section">
+            <h2 class="section-title">Мана +6</h2>
+        </div>
+       
+        <div id="manasteal" class="research-section">
+            <h2 class="section-title">Мана-сталь +6</h2>
+        </div>
+
+        <div class="total-remaining">
+            Всего нужно маны: <span id="total-amount">0</span>
+        </div>
+    </div>
+
+    <script>
+        const researchData = {
+            "mana1": [
+                { name: "Замок", costs: [242, 242, 242, 242, 242] },
+                { name: "Крепостная стена", costs: [224, 224, 224, 224, 224] },
+                { name: "Лесопилка", costs: [6, 6, 6, 6, 6] },
+                { name: "Каменоломня", costs: [6, 6, 6, 6, 6] },
+                { name: "Рудник", costs: [6, 6, 6, 6, 6] },
+                { name: "Ферма", costs: [6, 6, 6, 6, 6] },
+                { name: "Поместье", costs: [44, 44, 44, 44, 44] },
+                { name: "Казарма", costs: [78, 78, 78, 78, 78] },
+                { name: "Больница", costs: [88, 88, 88, 88, 88] },
+                { name: "Мастерская", costs: [127, 127, 127, 127, 127] },
+                { name: "Боевой зал", costs: [50, 50, 50, 50, 50] },
+                { name: "Академия", costs: [139, 139, 139, 139, 139] },
+                { name: "Фактория", costs: [95, 95, 95, 95, 95] },
+                { name: "Посольство", costs: [142, 142, 142, 142, 142] },
+                { name: "Подвал", costs: [31, 31, 31, 31, 31] },
+                { name: "Лунный цех", costs: [249, 249, 249, 249, 249] },
+                { name: "Тюрьма", costs: [89, 89, 89, 89, 89] },
+                { name: "Алтарь", costs: [171, 171, 171, 171, 171] },
+                { name: "Зверинец", costs: [50, 50, 50, 50, 50] },
+                { name: "Колодец", costs: [15, 15, 15, 15, 15] },
+                { name: "Сакральная башня", costs: [22, 22, 22, 22, 22] },
+                { name: "Вольер", costs: [24, 24, 24, 24, 24] },
+                { name: "Магическая шахта", costs: [29, 29, 29, 29, 29] },
+                { name: "Магическая палата", costs: [817, 817, 817, 817, 817] },
+                { name: "Пехи", costs: [299, 299, 299, 299, 299] },
+                { name: "Луки", costs: [299, 299, 299, 299, 299] },
+                { name: "Кони", costs: [299, 299, 299, 299, 299] }
+            ],
+            "mana2": [
+                { name: "Замок", costs: [363, 363, 363, 363, 363] },
+                { name: "Крепостная стена", costs: [336, 336, 336, 336, 336] },
+                { name: "Лесопилка", costs: [9, 9, 9, 9, 9] },
+                { name: "Каменоломня", costs: [9, 9, 9, 9, 9] },
+                { name: "Рудник", costs: [9, 9, 9, 9, 9] },
+                { name: "Ферма", costs: [9, 9, 9, 9, 9] },
+                { name: "Поместье", costs: [67, 67, 67, 67, 67] },
+                { name: "Казарма", costs: [117, 117, 117, 117, 117] },
+                { name: "Больница", costs: [115, 115, 115, 115, 115] },
+                { name: "Мастерская", costs: [190, 190, 190, 190, 190] },
+                { name: "Боевой зал", costs: [75, 75, 75, 75, 75] },
+                { name: "Академия", costs: [208, 208, 208, 208, 208] },
+                { name: "Фактория", costs: [143, 143, 143, 143, 143] },
+                { name: "Посольство", costs: [213, 213, 213, 213, 213] },
+                { name: "Подвал", costs: [47, 47, 47, 47, 47] },
+                { name: "Лунный цех", costs: [424, 424, 424, 424, 424] },
+                { name: "Тюрьма", costs: [134, 134, 134, 134, 134] },
+                { name: "Алтарь", costs: [257, 257, 257, 257, 257] },
+                { name: "Зверинец", costs: [77, 77, 77, 77, 77] },
+                { name: "Колодец", costs: [23, 23, 23, 23, 23] },
+                { name: "Сакральная башня", costs: [35, 35, 35, 35, 35] },
+                { name: "Вольер", costs: [37, 37, 37, 37, 37] },
+                { name: "Магическая шахта", costs: [50, 50, 50, 50, 50] },
+                { name: "Магическая палата", costs: [1390, 1390, 1390, 1390, 1390] },
+                { name: "Пехи", costs: [460, 460, 460, 460, 460] },
+                { name: "Луки", costs: [460, 460, 460, 460, 460] },
+                { name: "Кони", costs: [460, 460, 460, 460, 460] }
+            ],
+            "mana3": [
+                { name: "Замок", costs: [545, 545, 545, 545, 545] },
+                { name: "Крепостная стена", costs: [505, 505, 505, 505, 505] },
+                { name: "Лесопилка", costs: [15, 15, 15, 15, 15] },
+                { name: "Каменоломня", costs: [15, 15, 15, 15, 15] },
+                { name: "Рудник", costs: [15, 15, 15, 15, 15] },
+                { name: "Ферма", costs: [15, 15, 15, 15, 15] },
+                { name: "Поместье", costs: [101, 101, 101, 101, 101] },
+                { name: "Казарма", costs: [176, 176, 176, 176, 176] },
+                { name: "Больница", costs: [150, 150, 150, 150, 150] },
+                { name: "Мастерская", costs: [286, 286, 286, 286, 286] },
+                { name: "Боевой зал", costs: [113, 113, 113, 113, 113] },
+                { name: "Академия", costs: [313, 313, 313, 313, 313] },
+                { name: "Фактория", costs: [215, 215, 215, 215, 215] },
+                { name: "Посольство", costs: [319, 319, 319, 319, 319] },
+                { name: "Подвал", costs: [71, 71, 71, 71, 71] },
+                { name: "Лунный цех", costs: [721, 721, 721, 721, 721] },
+                { name: "Тюрьма", costs: [202, 202, 202, 202, 202] },
+                { name: "Алтарь", costs: [386, 386, 386, 386, 386] },
+                { name: "Зверинец", costs: [120, 120, 120, 120, 120] },
+                { name: "Колодец", costs: [36, 36, 36, 36, 36] },
+                { name: "Сакральная башня", costs: [54, 54, 54, 54, 54] },
+                { name: "Вольер", costs: [57, 57, 57, 57, 57] },
+                { name: "Магическая шахта", costs: [86, 86, 86, 86, 86] },
+                { name: "Магическая палата", costs: [2363, 2363, 2363, 2363, 2363] },
+                { name: "Пехи", costs: [709, 709, 709, 709, 709] },
+                { name: "Луки", costs: [709, 709, 709, 709, 709] },
+                { name: "Кони", costs: [709, 709, 709, 709, 709] }
+            ],
+            "mana4": [
+                { name: "Замок", costs: [818, 818, 818, 818, 818] },
+                { name: "Крепостная стена", costs: [757, 757, 757, 757, 757] },
+                { name: "Лесопилка", costs: [23, 23, 23, 23, 23] },
+                { name: "Каменоломня", costs: [23, 23, 23, 23, 23] },
+                { name: "Рудник", costs: [23, 23, 23, 23, 23] },
+                { name: "Ферма", costs: [23, 23, 23, 23, 23] },
+                { name: "Поместье", costs: [151, 151, 151, 151, 151] },
+                { name: "Казарма", costs: [265, 265, 265, 265, 265] },
+                { name: "Больница", costs: [195, 195, 195, 195, 195] },
+                { name: "Мастерская", costs: [429, 429, 429, 429, 429] },
+                { name: "Боевой зал", costs: [169, 169, 169, 169, 169] },
+                { name: "Академия", costs: [469, 469, 469, 469, 469] },
+                { name: "Фактория", costs: [323, 323, 323, 323, 323] },
+                { name: "Посольство", costs: [479, 479, 479, 479, 479] },
+                { name: "Подвал", costs: [106, 106, 106, 106, 106] },
+                { name: "Лунный цех", costs: [1226, 1226, 1226, 1226, 1226] },
+                { name: "Тюрьма", costs: [303, 303, 303, 303, 303] },
+                { name: "Алтарь", costs: [579, 579, 579, 579, 579] },
+                { name: "Зверинец", costs: [187, 187, 187, 187, 187] },
+                { name: "Колодец", costs: [56, 56, 56, 56, 56] },
+                { name: "Сакральная башня", costs: [84, 84, 84, 84, 84] },
+                { name: "Вольер", costs: [89, 89, 89, 89, 89] },
+                { name: "Магическая шахта", costs: [147, 147, 147, 147, 147] },
+                { name: "Магическая палата", costs: [4017, 4017, 4017, 4017, 4017] },
+                { name: "Пехи", costs: [1091, 1091, 1091, 1091, 1091] },
+                { name: "Луки", costs: [1091, 1091, 1091, 1091, 1091] },
+                { name: "Кони", costs: [1091, 1091, 1091, 1091, 1091] }
+            ],
+            "mana5": [
+                { name: "Замок", costs: [1227, 1227, 1227, 1227, 1227] },
+                { name: "Крепостная стена", costs: [1136, 1136, 1136, 1136, 1136] },
+                { name: "Лесопилка", costs: [36, 36, 36, 36, 36] },
+                { name: "Каменоломня", costs: [36, 36, 36, 36, 36] },
+                { name: "Рудник", costs: [36, 36, 36, 36, 36] },
+                { name: "Ферма", costs: [36, 36, 36, 36, 36] },
+                { name: "Поместье", costs: [227, 227, 227, 227, 227] },
+                { name: "Казарма", costs: [397, 397, 397, 397, 397] },
+                { name: "Больница", costs: [253, 253, 253, 253, 253] },
+                { name: "Мастерская", costs: [643, 643, 643, 643, 643] },
+                { name: "Боевой зал", costs: [254, 254, 254, 254, 254] },
+                { name: "Академия", costs: [704, 704, 704, 704, 704] },
+                { name: "Фактория", costs: [484, 484, 484, 484, 484] },
+                { name: "Посольство", costs: [719, 719, 719, 719, 719] },
+                { name: "Подвал", costs: [160, 160, 160, 160, 160] },
+                { name: "Лунный цех", costs: [2084, 2084, 2084, 2084, 2084] },
+                { name: "Тюрьма", costs: [454, 454, 454, 454, 454] },
+                { name: "Алтарь", costs: [869, 869, 869, 869, 869] },
+                { name: "Зверинец", costs: [290, 290, 290, 290, 290] },
+                { name: "Колодец", costs: [87, 87, 87, 87, 87] },
+                { name: "Сакральная башня", costs: [130, 130, 130, 130, 130] },
+                { name: "Вольер", costs: [139, 139, 139, 139, 139] },
+                { name: "Магическая шахта", costs: [250, 250, 250, 250, 250] },
+                { name: "Магическая палата", costs: [6829, 6829, 6829, 6829, 6829] },
+                { name: "Пехи", costs: [1680, 1680, 1680, 1680, 1680] },
+                { name: "Луки", costs: [1680, 1680, 1680, 1680, 1680] },
+                { name: "Кони", costs: [1680, 1680, 1680, 1680, 1680] }
+            ],
+            "mana6": [
+                { name: "Замок", costs: [1196, 1196, 1196, 1196, 1196] },
+                { name: "Крепостная стена", costs: [1107, 1107, 1107, 1107, 1107] },
+                { name: "Лесопилка", costs: [56, 56, 56, 56, 56] },
+                { name: "Каменоломня", costs: [56, 56, 56, 56, 56] },
+                { name: "Рудник", costs: [56, 56, 56, 56, 56] },
+                { name: "Ферма", costs: [56, 56, 56, 56, 56] },
+                { name: "Поместье", costs: [221, 221, 221, 221, 221] },
+                { name: "Казарма", costs: [387, 387, 387, 387, 387] },
+                { name: "Больница", costs: [214, 214, 214, 214, 214] },
+                { name: "Мастерская", costs: [627, 627, 627, 627, 627] },
+                { name: "Боевой зал", costs: [248, 248, 248, 248, 248] },
+                { name: "Академия", costs: [686, 686, 686, 686, 686] },
+                { name: "Фактория", costs: [472, 472, 472, 472, 472] },
+                { name: "Посольство", costs: [701, 701, 701, 701, 701] },
+                { name: "Подвал", costs: [156, 156, 156, 156, 156] },
+                { name: "Лунный цех", costs: [2303, 2303, 2303, 2303, 2303] },
+                { name: "Тюрьма", costs: [443, 443, 443, 443, 443] },
+                { name: "Алтарь", costs: [847, 847, 847, 847, 847] },
+                { name: "Зверинец", costs: [292, 292, 292, 292, 292] },
+                { name: "Колодец", costs: [87, 87, 87, 87, 87] },
+                { name: "Сакральная башня", costs: [131, 131, 131, 131, 131] },
+                { name: "Вольер", costs: [140, 140, 140, 140, 140] },
+                { name: "Магическая шахта", costs: [425, 425, 425, 425, 425] },
+                { name: "Магическая палата", costs: [7546, 7546, 7546, 7546, 7546] },
+                { name: "Пехи", costs: [1846, 1846, 1846, 1846, 1846] },
+                { name: "Луки", costs: [1846, 1846, 1846, 1846, 1846] },
+                { name: "Кони", costs: [1846, 1846, 1846, 1846, 1846] }
+            ],
+             "manasteal": [
+                { name: "Замок", costs: [35, 35, 35, 35, 35] },
+                { name: "Крепостная стена", costs: [32, 32, 32, 32, 32] },
+                { name: "Лесопилка", costs: [0, 0, 0, 0, 0] },
+                { name: "Каменоломня", costs: [0, 0, 0, 0, 0] },
+                { name: "Рудник", costs: [0, 0, 0, 0, 0] },
+                { name: "Ферма", costs: [0, 0, 0, 0, 0] },
+                { name: "Поместье", costs: [6, 6, 6, 6, 6] },
+                { name: "Казарма", costs: [11, 11, 11, 11, 11] },
+                { name: "Больница", costs: [6, 6, 6, 6, 6] },
+                { name: "Мастерская", costs: [18, 18, 18, 18, 18] },
+                { name: "Боевой зал", costs: [7, 7, 7, 7, 7] },
+                { name: "Академия", costs: [20, 20, 20, 20, 20] },
+                { name: "Фактория", costs: [14, 14, 14, 14, 14] },
+                { name: "Посольство", costs: [20, 20, 20, 20, 20] },
+                { name: "Подвал", costs: [4, 4, 4, 4, 4] },
+                { name: "Лунный цех", costs: [68, 68, 68, 68, 68] },
+                { name: "Тюрьма", costs: [13, 13, 13, 13, 13] },
+                { name: "Алтарь", costs: [25, 25, 25, 25, 25] },
+                { name: "Зверинец", costs: [8, 8, 8, 8, 8] },
+                { name: "Колодец", costs: [2, 2, 2, 2, 2] },
+                { name: "Сакральная башня", costs: [3, 3, 3, 3, 3] },
+                { name: "Вольер", costs: [4, 4, 4, 4, 4] },
+                { name: "Магическая шахта", costs: [54, 54, 54, 54, 54] },
+                { name: "Магическая палата", costs: [223, 223, 223, 223, 223] },
+                { name: "Пехи", costs: [114, 114, 114, 114, 114] },
+                { name: "Луки", costs: [114, 114, 114, 114, 114] },
+                { name: "Кони", costs: [114, 114, 114, 114, 114] }
+            ]
+         };
+        function initApp() {
+            for (const branch in researchData) {
+                const section = document.getElementById(branch);
+                if (section) {
+                    researchData[branch].forEach((research, index) => {
+                        const researchItem = document.createElement('div');
+                        researchItem.className = 'research-item';
+                        researchItem.innerHTML = 
+                            `<div class="research-name">${research.name}</div>
+                            <input type="number" class="progress-input" min="0" max="5" value="0" data-branch="${branch}" data-index="${index}">
+                            <div class="remaining" data-branch="${branch}" data-index="${index}">0</div>`;
+                        section.appendChild(researchItem);
+                    });
+                }
+            }
+
+            
+            document.querySelectorAll('.branch-btn').forEach(button => {
+                button.addEventListener('click', function() {                    
+                    document.querySelectorAll('.branch-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.research-section').forEach(section => section.classList.remove('active'));                       
+                    this.classList.add('active');
+                    const branchId = this.getAttribute('data-branch');
+                    document.getElementById(branchId).classList.add('active');                  
+                    calculateTotal();
+                });
+            });
+
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('progress-input')) {
+                    const branch = e.target.getAttribute('data-branch');
+                    const index = e.target.getAttribute('data-index');
+                    const progress = parseInt(e.target.value) || 0;
+                    
+                    if (progress < 0) e.target.value = 0;
+                    if (progress > 5) e.target.value = 5;
+                    
+                    
+                    calculateRemaining(branch, index);
+                    
+                    
+                    calculateTotal();
+                }
+            });
+
+            
+            for (const branch in researchData) {
+                researchData[branch].forEach((research, index) => {
+                    calculateRemaining(branch, index);
+                });
+            }
+            
+            
+            calculateTotal();
+        }
+
+        
+        function calculateRemaining(branch, index) {
+            const research = researchData[branch][index];
+            const progressInput = document.querySelector(`.progress-input[data-branch="${branch}"][data-index="${index}"]`);
+            const remainingElement = document.querySelector(`.remaining[data-branch="${branch}"][data-index="${index}"]`);
+            
+            const progress = parseInt(progressInput.value) || 0;
+                      
+            let remaining = 0;
+            for (let i = progress; i < 5; i++) {
+                remaining += research.costs[i];
+            }
+            
+            remainingElement.textContent = remaining;
+            return remaining;
+        }
+      
+        function calculateTotal() {
+            let total = 0;
+            
+            document.querySelectorAll('.research-section.active .research-item').forEach(item => {
+                const remainingElement = item.querySelector('.remaining');
+                total += parseInt(remainingElement.textContent) || 0;
+            });
+            
+            document.getElementById('total-amount').textContent = total;
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
