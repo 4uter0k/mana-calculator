@@ -14,9 +14,9 @@
         
         body {
             background-image: url('https://i.yapx.ru/c2igk.png');
-           background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
         
         .container {
@@ -29,21 +29,22 @@
             margin-bottom: 30px;
             padding: 20px;
             background-image: url('https://i.yapx.ru/c2igk.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #ffffff;
-             text-shadow: 
-        2px 0 0 #000,
-        -2px 0 0 #000,
-        0 2px 0 #000,
-        0 -2px 0 #000,
-        1px 1px 0 #000,
-        -1px -1px 0 #000,
-        1px -1px 0 #000,
-        -1px 1px 0 #000;
-    color: #ffffff;   
+            text-shadow: 
+                2px 0 0 #000,
+                -2px 0 0 #000,
+                0 2px 0 #000,
+                0 -2px 0 #000,
+                1px 1px 0 #000,
+                -1px -1px 0 #000,
+                1px -1px 0 #000,
+                -1px 1px 0 #000;
+            color: #ffffff;   
         }
+        
         h1 {
             font-size: 2.2rem;
             margin-bottom: 10px;
@@ -120,7 +121,7 @@
             color: #e74c3c;
         }
         
-         .total-remaining {
+        .total-remaining {
             text-align: center;
             margin-top: 30px;
             padding: 20px;
@@ -185,7 +186,7 @@
         </div>
 
         <div class="total-remaining">
-            Всего нужно маны: <span id="total-amount">0</span>
+            Всего нужно <span id="resource-name">маны</span>: <span id="total-amount">0</span>
         </div>
     </div>
 
@@ -365,7 +366,7 @@
                 { name: "Луки", costs: [1846, 1846, 1846, 1846, 1846] },
                 { name: "Кони", costs: [1846, 1846, 1846, 1846, 1846] }
             ],
-             "manasteal": [
+            "manasteal": [
                 { name: "Замок", costs: [35, 35, 35, 35, 35] },
                 { name: "Крепостная стена", costs: [32, 32, 32, 32, 32] },
                 { name: "Лесопилка", costs: [0, 0, 0, 0, 0] },
@@ -394,7 +395,8 @@
                 { name: "Луки", costs: [114, 114, 114, 114, 114] },
                 { name: "Кони", costs: [114, 114, 114, 114, 114] }
             ]
-         };
+        };
+
         function initApp() {
             for (const branch in researchData) {
                 const section = document.getElementById(branch);
@@ -411,14 +413,22 @@
                 }
             }
 
-            
             document.querySelectorAll('.branch-btn').forEach(button => {
                 button.addEventListener('click', function() {                    
                     document.querySelectorAll('.branch-btn').forEach(btn => btn.classList.remove('active'));
                     document.querySelectorAll('.research-section').forEach(section => section.classList.remove('active'));                       
                     this.classList.add('active');
                     const branchId = this.getAttribute('data-branch');
-                    document.getElementById(branchId).classList.add('active');                  
+                    document.getElementById(branchId).classList.add('active');
+                    
+                    // Обновляем название ресурса в зависимости от выбранной ветки
+                    const resourceNameElement = document.getElementById('resource-name');
+                    if (branchId === 'manasteal') {
+                        resourceNameElement.textContent = 'мана-стали';
+                    } else {
+                        resourceNameElement.textContent = 'маны';
+                    }
+                    
                     calculateTotal();
                 });
             });
@@ -432,26 +442,20 @@
                     if (progress < 0) e.target.value = 0;
                     if (progress > 5) e.target.value = 5;
                     
-                    
                     calculateRemaining(branch, index);
-                    
-                    
                     calculateTotal();
                 }
             });
 
-            
             for (const branch in researchData) {
                 researchData[branch].forEach((research, index) => {
                     calculateRemaining(branch, index);
                 });
             }
             
-            
             calculateTotal();
         }
 
-        
         function calculateRemaining(branch, index) {
             const research = researchData[branch][index];
             const progressInput = document.querySelector(`.progress-input[data-branch="${branch}"][data-index="${index}"]`);
@@ -482,8 +486,4 @@
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
-
 </html>
-
-
-
