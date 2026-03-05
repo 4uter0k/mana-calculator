@@ -22,6 +22,46 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .language-switcher {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px;
+            border-radius: 8px;
+        }
+        
+        .lang-btn {
+            padding: 8px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .lang-btn.active {
+            background-color: #e74c3c;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
         }
         
         header {
@@ -32,6 +72,12 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            border-radius: 10px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
             color: #ffffff;
             text-shadow: 
                 2px 0 0 #000,
@@ -42,12 +88,18 @@
                 -1px -1px 0 #000,
                 1px -1px 0 #000,
                 -1px 1px 0 #000;
-            color: #ffffff;   
         }
         
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+        header p {
+            color: #ffffff;
+            text-shadow: 
+                1px 0 0 #000,
+                -1px 0 0 #000,
+                0 1px 0 #000,
+                0 -1px 0 #000;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
         
         .branch-selector {
@@ -66,10 +118,14 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
+            transition: all 0.3s ease;
+            flex: 1 1 auto;
+            min-width: 100px;
         }
         
         .branch-btn:hover {
             background-color: #2980b9;
+            transform: translateY(-2px);
         }
         
         .branch-btn.active {
@@ -95,6 +151,8 @@
             align-items: center;
             padding: 12px 15px;
             border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .research-item:last-child {
@@ -104,6 +162,7 @@
         .research-name {
             flex: 1;
             font-weight: 500;
+            min-width: 150px;
         }
         
         .progress-input {
@@ -112,6 +171,13 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             text-align: center;
+            font-size: 1rem;
+        }
+        
+        .progress-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         }
         
         .remaining {
@@ -119,6 +185,7 @@
             text-align: right;
             font-weight: bold;
             color: #e74c3c;
+            font-size: 1.1rem;
         }
         
         .total-remaining {
@@ -127,8 +194,9 @@
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.7);
             border-radius: 8px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
+            backdrop-filter: blur(5px);
         }
         
         .section-title {
@@ -138,13 +206,63 @@
             border-bottom: 2px solid #3498db;
             color: #2c3e50;
         }
+        
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .language-switcher {
+                justify-content: center;
+            }
+            
+            .research-item {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            
+            .research-name {
+                text-align: center;
+            }
+            
+            .progress-input {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
+            
+            .remaining {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .branch-btn {
+                min-width: 80px;
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="header-top">
+            <div></div>
+            <div class="language-switcher">
+                <button class="lang-btn active" data-lang="ru">RU</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+        </div>
+        
         <header>
             <h1>Калькулятор маны</h1>
-            <p>Этот калькулятор поможет вам рассчитать точное количество маны, необходимых для перехода на следующий уровень. Выберите нужный уровень, укажите ваш текущий прогресс для каждого здания и мгновенно получите расчет остатка маны. </p>
+            <p>Этот калькулятор поможет вам рассчитать точное количество маны, необходимых для перехода на следующий уровень. Выберите нужный уровень, укажите ваш текущий прогресс для каждого здания и мгновенно получите расчет остатка маны.</p>
         </header>
         
         <div class="branch-selector">
@@ -186,11 +304,106 @@
         </div>
 
         <div class="total-remaining">
-            Всего нужно <span id="resource-name">маны</span>: <span id="total-amount">0</span>
+            <span id="total-text">Всего нужно маны: 0</span>
         </div>
     </div>
 
     <script>
+        // Объект с переводами
+        const translations = {
+            ru: {
+                title: "Калькулятор маны",
+                description: "Этот калькулятор поможет вам рассчитать точное количество маны, необходимых для перехода на следующий уровень. Выберите нужный уровень, укажите ваш текущий прогресс для каждого здания и мгновенно получите расчет остатка маны.",
+                totalPrefix: "Всего нужно",
+                totalMana: "маны",
+                totalManaSteel: "мана-стали",
+                branches: {
+                    mana1: "Мана +1",
+                    mana2: "Мана +2",
+                    mana3: "Мана +3",
+                    mana4: "Мана +4",
+                    mana5: "Мана +5",
+                    mana6: "Мана +6",
+                    manasteal: "Мана-сталь +6"
+                },
+                buildingNames: {
+                    "Замок": "Замок",
+                    "Крепостная стена": "Крепостная стена",
+                    "Лесопилка": "Лесопилка",
+                    "Каменоломня": "Каменоломня",
+                    "Рудник": "Рудник",
+                    "Ферма": "Ферма",
+                    "Поместье": "Поместье",
+                    "Казарма": "Казарма",
+                    "Больница": "Больница",
+                    "Мастерская": "Мастерская",
+                    "Боевой зал": "Боевой зал",
+                    "Академия": "Академия",
+                    "Фактория": "Фактория",
+                    "Посольство": "Посольство",
+                    "Подвал": "Подвал",
+                    "Лунный цех": "Лунный цех",
+                    "Тюрьма": "Тюрьма",
+                    "Алтарь": "Алтарь",
+                    "Зверинец": "Зверинец",
+                    "Колодец": "Колодец",
+                    "Сакральная башня": "Сакральная башня",
+                    "Вольер": "Вольер",
+                    "Магическая шахта": "Магическая шахта",
+                    "Магическая палата": "Магическая палата",
+                    "Пехи": "Пехи",
+                    "Луки": "Луки",
+                    "Кони": "Кони"
+                }
+            },
+            en: {
+                title: "Mana Calculator",
+                description: "This calculator will help you calculate the exact amount of mana needed to reach the next level. Select the desired level, specify your current progress for each building and instantly get the remaining mana calculation.",
+                totalPrefix: "Total",
+                totalMana: "mana needed",
+                totalManaSteel: "mana-steel needed",
+                branches: {
+                    mana1: "Mana +1",
+                    mana2: "Mana +2",
+                    mana3: "Mana +3",
+                    mana4: "Mana +4",
+                    mana5: "Mana +5",
+                    mana6: "Mana +6",
+                    manasteal: "Mana-steel +6"
+                },
+                buildingNames: {
+                    "Замок": "Castle",
+                    "Крепостная стена": "Castle wall",
+                    "Лесопилка": "Lumber mill",
+                    "Каменоломня": "Quarry",
+                    "Рудник": "Mines",
+                    "Ферма": "Farm",
+                    "Поместье": "Manor",
+                    "Казарма": "Barracks",
+                    "Больница": "Infirmary",
+                    "Мастерская": "Workshop",
+                    "Боевой зал": "Battle Hall",
+                    "Академия": "Academy",
+                    "Фактория": "Trading Post",
+                    "Посольство": "Embassy",
+                    "Подвал": "Vault",
+                    "Лунный цех": "Lunar foundry",
+                    "Тюрьма": "Prison",
+                    "Алтарь": "Altar",
+                    "Зверинец": "Monster hold",
+                    "Колодец": "Spring",
+                    "Сакральная башня": "Mystic spire",
+                    "Вольер": "Gum",
+                    "Магическая шахта": "Mana lode",
+                    "Магическая палата": "Magic Chamber",
+                    "Пехи": "Infantry",
+                    "Луки": "Range",
+                    "Кони": "Cavalry"
+                }
+            }
+        };
+
+        // Данные исследований
         const researchData = {
             "mana1": [
                 { name: "Замок", costs: [242, 242, 242, 242, 242] },
@@ -397,69 +610,101 @@
             ]
         };
 
-        function initApp() {
-            for (const branch in researchData) {
-                const section = document.getElementById(branch);
-                if (section) {
-                    researchData[branch].forEach((research, index) => {
-                        const researchItem = document.createElement('div');
-                        researchItem.className = 'research-item';
-                        researchItem.innerHTML = 
-                            `<div class="research-name">${research.name}</div>
-                            <input type="number" class="progress-input" min="0" max="5" value="0" data-branch="${branch}" data-index="${index}">
-                            <div class="remaining" data-branch="${branch}" data-index="${index}">0</div>`;
-                        section.appendChild(researchItem);
-                    });
-                }
-            }
+        let currentLang = 'ru';
 
-            document.querySelectorAll('.branch-btn').forEach(button => {
-                button.addEventListener('click', function() {                    
-                    document.querySelectorAll('.branch-btn').forEach(btn => btn.classList.remove('active'));
-                    document.querySelectorAll('.research-section').forEach(section => section.classList.remove('active'));                       
-                    this.classList.add('active');
-                    const branchId = this.getAttribute('data-branch');
-                    document.getElementById(branchId).classList.add('active');
-                    
-                    // Обновляем название ресурса в зависимости от выбранной ветки
-                    const resourceNameElement = document.getElementById('resource-name');
-                    if (branchId === 'manasteal') {
-                        resourceNameElement.textContent = 'мана-стали';
-                    } else {
-                        resourceNameElement.textContent = 'маны';
-                    }
-                    
-                    calculateTotal();
-                });
-            });
-
-            document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('progress-input')) {
-                    const branch = e.target.getAttribute('data-branch');
-                    const index = e.target.getAttribute('data-index');
-                    const progress = parseInt(e.target.value) || 0;
-                    
-                    if (progress < 0) e.target.value = 0;
-                    if (progress > 5) e.target.value = 5;
-                    
-                    calculateRemaining(branch, index);
-                    calculateTotal();
-                }
-            });
-
-            for (const branch in researchData) {
-                researchData[branch].forEach((research, index) => {
-                    calculateRemaining(branch, index);
-                });
-            }
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
             
-            calculateTotal();
+            // Обновляем заголовок и описание
+            document.querySelector('h1').textContent = t.title;
+            document.querySelector('header p').textContent = t.description;
+            
+            // Обновляем названия веток на кнопках
+            document.querySelectorAll('.branch-btn').forEach(btn => {
+                const branch = btn.getAttribute('data-branch');
+                btn.textContent = t.branches[branch];
+            });
+            
+            // Обновляем заголовки секций
+            document.querySelectorAll('.research-section').forEach(section => {
+                const sectionTitle = section.querySelector('.section-title');
+                if (sectionTitle) {
+                    const branchId = section.id;
+                    sectionTitle.textContent = t.branches[branchId];
+                }
+            });
+            
+            // Обновляем активную кнопку языка
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
+            
+            // Обновляем все названия зданий
+            updateBuildingNames();
+            
+            // Обновляем итоговую строку
+            updateTotalText();
+            
+            // Сохраняем выбранный язык
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        function updateBuildingNames() {
+            const t = translations[currentLang];
+            
+            document.querySelectorAll('.research-item').forEach(item => {
+                const input = item.querySelector('.progress-input');
+                if (input) {
+                    const branch = input.getAttribute('data-branch');
+                    const index = input.getAttribute('data-index');
+                    
+                    if (branch && index !== null) {
+                        const originalName = researchData[branch][index].name;
+                        const nameElement = item.querySelector('.research-name');
+                        if (nameElement) {
+                            nameElement.textContent = t.buildingNames[originalName] || originalName;
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveProgress() {
+            const progressData = {};
+            document.querySelectorAll('.progress-input').forEach(input => {
+                const branch = input.getAttribute('data-branch');
+                const index = input.getAttribute('data-index');
+                if (!progressData[branch]) progressData[branch] = {};
+                progressData[branch][index] = input.value;
+            });
+            localStorage.setItem('manaCalculatorProgress', JSON.stringify(progressData));
+        }
+
+        function loadSavedProgress() {
+            const saved = localStorage.getItem('manaCalculatorProgress');
+            if (saved) {
+                try {
+                    const progressData = JSON.parse(saved);
+                    document.querySelectorAll('.progress-input').forEach(input => {
+                        const branch = input.getAttribute('data-branch');
+                        const index = input.getAttribute('data-index');
+                        if (progressData[branch] && progressData[branch][index] !== undefined) {
+                            input.value = progressData[branch][index];
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error loading saved progress:', e);
+                }
+            }
         }
 
         function calculateRemaining(branch, index) {
             const research = researchData[branch][index];
             const progressInput = document.querySelector(`.progress-input[data-branch="${branch}"][data-index="${index}"]`);
             const remainingElement = document.querySelector(`.remaining[data-branch="${branch}"][data-index="${index}"]`);
+            
+            if (!progressInput || !remainingElement) return 0;
             
             const progress = parseInt(progressInput.value) || 0;
                       
@@ -477,15 +722,130 @@
             
             document.querySelectorAll('.research-section.active .research-item').forEach(item => {
                 const remainingElement = item.querySelector('.remaining');
-                total += parseInt(remainingElement.textContent) || 0;
+                if (remainingElement) {
+                    total += parseInt(remainingElement.textContent) || 0;
+                }
             });
             
-            document.getElementById('total-amount').textContent = total;
+            updateTotalText(total);
+            return total;
+        }
+
+        function updateTotalText(total) {
+            const t = translations[currentLang];
+            const activeBranch = document.querySelector('.branch-btn.active')?.getAttribute('data-branch') || 'mana1';
+            const resourceType = (activeBranch === 'manasteal') ? t.totalManaSteel : t.totalMana;
+            const totalAmount = total !== undefined ? total : calculateTotal();
+            document.getElementById('total-text').textContent = `${t.totalPrefix} ${resourceType}: ${totalAmount}`;
+        }
+
+        function initApp() {
+            // Всегда устанавливаем русский язык при загрузке
+            currentLang = 'ru';
+            
+            // Сбрасываем сохраненный язык в localStorage
+            localStorage.setItem('preferredLanguage', 'ru');
+            
+            // Обновляем активную кнопку языка
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === 'ru');
+            });
+            
+            // Обновляем заголовок и описание
+            document.querySelector('h1').textContent = translations.ru.title;
+            document.querySelector('header p').textContent = translations.ru.description;
+            
+            // Обновляем названия веток на кнопках
+            document.querySelectorAll('.branch-btn').forEach(btn => {
+                const branch = btn.getAttribute('data-branch');
+                btn.textContent = translations.ru.branches[branch];
+            });
+            
+            // Обновляем заголовки секций
+            document.querySelectorAll('.research-section').forEach(section => {
+                const sectionTitle = section.querySelector('.section-title');
+                if (sectionTitle) {
+                    const branchId = section.id;
+                    sectionTitle.textContent = translations.ru.branches[branchId];
+                }
+            });
+            
+            // Создаем элементы для каждого здания
+            for (const branch in researchData) {
+                const section = document.getElementById(branch);
+                if (section) {
+                    // Очищаем секцию перед добавлением (чтобы не было дубликатов)
+                    section.innerHTML = `<h2 class="section-title">${translations.ru.branches[branch]}</h2>`;
+                    
+                    researchData[branch].forEach((research, index) => {
+                        const researchItem = document.createElement('div');
+                        researchItem.className = 'research-item';
+                        
+                        // Используем русские названия
+                        const displayName = translations.ru.buildingNames[research.name] || research.name;
+                        
+                        researchItem.innerHTML = 
+                            `<div class="research-name">${displayName}</div>
+                            <input type="number" class="progress-input" min="0" max="5" value="0" data-branch="${branch}" data-index="${index}">
+                            <div class="remaining" data-branch="${branch}" data-index="${index}">0</div>`;
+                        section.appendChild(researchItem);
+                    });
+                }
+            }
+            
+            // Восстанавливаем сохраненные значения прогресса
+            loadSavedProgress();
+            
+            // Рассчитываем остатки для всех
+            for (const branch in researchData) {
+                researchData[branch].forEach((research, index) => {
+                    calculateRemaining(branch, index);
+                });
+            }
+            
+            // Обновляем итог
+            calculateTotal();
+
+            // Обработчики для кнопок языка
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                });
+            });
+
+            // Обработчики для кнопок веток
+            document.querySelectorAll('.branch-btn').forEach(button => {
+                button.addEventListener('click', function() {                    
+                    document.querySelectorAll('.branch-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.research-section').forEach(section => section.classList.remove('active'));                       
+                    this.classList.add('active');
+                    const branchId = this.getAttribute('data-branch');
+                    document.getElementById(branchId).classList.add('active');
+                    
+                    calculateTotal();
+                });
+            });
+
+            // Обработчик для полей ввода
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('progress-input')) {
+                    const branch = e.target.getAttribute('data-branch');
+                    const index = e.target.getAttribute('data-index');
+                    let progress = parseInt(e.target.value) || 0;
+                    
+                    if (progress < 0) progress = 0;
+                    if (progress > 5) progress = 5;
+                    e.target.value = progress;
+                    
+                    calculateRemaining(branch, index);
+                    calculateTotal();
+                    saveProgress();
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
-
-
